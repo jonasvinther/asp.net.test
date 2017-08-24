@@ -15,5 +15,12 @@ pipeline() {
                 } 
             } 
         }
+        stage('Deploy') {
+            steps {
+                script {
+                    bat 'C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Debug/Package/WebApplication1.deploy.cmd /Y "-setParam:name=\'IIS Web Application Name\',value=\'test\'" "/M:${IISURL}" -allowUntrusted /U:${IISUSER} /P:${IISPWD} /A:Basic'
+                }
+            }
+        }
     }
 }
