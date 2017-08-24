@@ -20,7 +20,7 @@ pipeline() {
             
             steps {
                 withCredentials([string(credentialsId: 'IISURL', variable: 'IISURL'), string(credentialsId: 'IISPWD', variable: 'IISUSER'), string(credentialsId: 'IISPWD', variable: 'IISPWD')]) {
-                    bat 'C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Debug/Package/WebApplication1.deploy.cmd /Y "-setParam:name=\'IIS Web Application Name\',value=\'test\'" "/M:${IISURL}" -allowUntrusted /U:${IISUSER} /P:${IISPWD} /A:Basic'
+                    bat 'C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Debug/Package/WebApplication1.deploy.cmd /Y "-setParam:name=\'IIS Web Application Name\',value=\'test\'" "/M:%IISURL%" -allowUntrusted /U:${IISUSER} /P:${IISPWD} /A:Basic'
                 }
             }
         }
