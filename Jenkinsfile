@@ -17,12 +17,18 @@ pipeline() {
             } 
         }
         stage('Deploy') {
+            
+            
                 withCredentials([
-        string(credentialsId: 'IISURL', variable: 'IISURL'), 
-        string(credentialsId: 'IISUSER', variable: 'IISUSER'), 
-        string(credentialsId: 'IISPWD', variable: 'IISPWD')
-        ]){
+                    string(credentialsId: '', variable: 'IISURL'), 
+                    string(credentialsId: '', variable: 'IISUSER'), 
+                    string(credentialsId: '', variable: 'IISPWD')
+                ]){
+                    steps {
+                script {
                     bat 'C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Debug/Package/WebApplication1.deploy.cmd /Y "-setParam:name=\'IIS Web Application Name\',value=\'test\'" "/M:${IISURL}" -allowUntrusted /U:${IISUSER} /P:${IISPWD} /A:Basic'
+                }
+            }
             }
         }
     }
