@@ -13,8 +13,12 @@ node('windows') {
             string(credentialsId: 'IISURL', variable: 'IISURL'), 
             string(credentialsId: 'IISUSER', variable: 'IISUSER'), 
             string(credentialsId: 'IISPWD', variable: 'IISPWD')]) {
-                bat 'C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/Package/WebApplication1.deploy.cmd /Y "-setParam:name=\'IIS Web Application Name\',value=\'test\'" "/M:%IISURL%" -allowUntrusted /U:%IISUSER% /P:%IISPWD% /A:Basic'
+                doDeploy(IISURL, IISUSER, IISPWD)
         }
     }
 
+}
+
+def doDeploy(IISURL, IISUSER, IISPWD) {
+    bat 'C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/Package/WebApplication1.deploy.cmd /Y "-setParam:name=\'IIS Web Application Name\',value=\'test\'" "/M:%IISURL%" -allowUntrusted /U:%IISUSER% /P:%IISPWD% /A:Basic'
 }
