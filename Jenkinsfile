@@ -25,5 +25,5 @@ def doDeploy(IISURL, IISUSER, IISPWD) {
 }
 
 def doCompress() {
-    sh 'Compress-Archive -Path C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/Package/* -DestinationPath C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/package.zip'
+    powershell 'Compress-Archive -Path C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/Package/* -DestinationPath C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/package.zip'
 }
