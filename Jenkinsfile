@@ -14,6 +14,7 @@ node('windows') {
             string(credentialsId: 'IISUSER', variable: 'IISUSER'), 
             string(credentialsId: 'IISPWD', variable: 'IISPWD')]) {
                 doDeploy(IISURL, IISUSER, IISPWD)
+                doCompress()
         }
     }
 
@@ -21,4 +22,8 @@ node('windows') {
 
 def doDeploy(IISURL, IISUSER, IISPWD) {
     bat 'C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/Package/WebApplication1.deploy.cmd /Y "-setParam:name=\'IIS Web Application Name\',value=\'test\'" "/M:%IISURL%" -allowUntrusted /U:%IISUSER% /P:%IISPWD% /A:Basic'
+}
+
+def doCompress() {
+    sh 'Compress-Archive -Path C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/Package/* -DestinationPath C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/package.zip'
 }
