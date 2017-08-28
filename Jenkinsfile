@@ -34,7 +34,13 @@ node('windows') {
 
     stage('Archive') {
         // archiveArtifacts artifacts: 'WebApplication1/obj/Release/Package/*', fingerprint: true
-        doCompress()
+        powershell """ \
+            Compress-Archive -Path C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/Package/* \
+            -DestinationPath C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/package-${env.BUILD_NUMBER}.zip -Force \
+        """
+    }
+
+    stage('Upload to artifactory') {
         artifactoryServer.upload(artifactoryUploadSpec)
     }
 
@@ -46,11 +52,4 @@ def doDeploy(IISURL, IISUSER, IISPWD) {
         /Y "-setParam:name=\'IIS Web Application Name\',value=\'test\'" \
         "/M:%IISURL%" -allowUntrusted /U:%IISUSER% /P:%IISPWD% /A:Basic \
     '''
-}
-
-def doCompress() {
-    powershell """ \
-        Compress-Archive -Path C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/Package/* \
-        -DestinationPath C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/package-${env.BUILD_NUMBER}.zip -Force \
-    """
 }
