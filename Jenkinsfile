@@ -41,7 +41,7 @@ node('windows') {
                 {
                     "pattern": "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/package-${env.BUILD_NUMBER}.zip",
                     "target": "nuget",
-                    "props": "build=${commitId}"
+                    "props": "commit.id=${commitId};"
                 }
             ]
         }"""
