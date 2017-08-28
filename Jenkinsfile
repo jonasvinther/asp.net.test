@@ -22,6 +22,10 @@ node('windows') {
         }
     }
 
+    stage('Archive') {
+        archiveArtifacts artifacts: 'C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/Package/*'
+    }
+
 }
 
 def doDeploy(IISURL, IISUSER, IISPWD) {
