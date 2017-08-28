@@ -23,7 +23,7 @@ node('windows') {
     }
 
     stage('Archive') {
-        archive 'WebApplication1/obj/Release/Package/**'
+        archiveArtifacts artifacts: 'C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/Package/*'
     }
 
 }
