@@ -3,11 +3,11 @@ node('windows') {
     def server = Artifactory.server('artifactory')
 
 
-    def downloadSpec = """{
+    def uploadSpec = """{
         "files": [
             {
                 "pattern": "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/package.zip",
-                "target": "bankdata/"
+                "target": "bankdata-repo/bankdata-files"
             }
         ]
     }"""
