@@ -1,9 +1,8 @@
 node('windows') {
 
-    def server = Artifactory.server('artifactory')
-
-
-    def uploadSpec = """{
+    def artifactoryServer = Artifactory.server('artifactory')
+    
+    def artifactoryUploadSpec = """{
         "files": [
             {
                 "pattern": "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/package-${env.BUILD_NUMBER}.zip",
@@ -17,11 +16,11 @@ node('windows') {
     }
 
     stage('Build') {
-        bat ''' \
-            "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/MSBuild/15.0/Bin/amd64/MSBuild.exe" \
+        bat """ \
+            'C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/MSBuild/15.0/Bin/amd64/MSBuild.exe' \
             C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/WebApplication1.csproj \
             /v:detailed /t:restore;ReBuild;Package /p:Configuration=Release \
-        '''
+        """
     }
 
     stage('Deploy') {
@@ -30,23 +29,23 @@ node('windows') {
             string(credentialsId: 'IISUSER', variable: 'IISUSER'), 
             string(credentialsId: 'IISPWD', variable: 'IISPWD')]) {
                 doDeploy(IISURL, IISUSER, IISPWD)
-                doCompress()
         }
     }
 
     stage('Archive') {
         // archiveArtifacts artifacts: 'WebApplication1/obj/Release/Package/*', fingerprint: true
-        server.upload(uploadSpec)
+        doCompress()
+        artifactoryServer.upload(artifactoryUploadSpec)
     }
 
 }
 
 def doDeploy(IISURL, IISUSER, IISPWD) {
-    bat ''' \
+    bat """ \
         C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/Package/WebApplication1.deploy.cmd \
-        /Y "-setParam:name=\'IIS Web Application Name\',value=\'test\'" \
-        "/M:%IISURL%" -allowUntrusted /U:%IISUSER% /P:%IISPWD% /A:Basic \
-    '''
+        /Y '-setParam:name=\'IIS Web Application Name\',value=\'test\'' \
+        '/M:%IISURL%' -allowUntrusted /U:%IISUSER% /P:%IISPWD% /A:Basic \
+    """
 }
 
 def doCompress() {
