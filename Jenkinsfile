@@ -6,7 +6,7 @@ node('windows') {
     def uploadSpec = """{
         "files": [
             {
-                "pattern": "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/package.zip",
+                "pattern": "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/package-${env.BUILD_NUMBER}.zip",
                 "target": "nuget"
             }
         ]
@@ -52,6 +52,6 @@ def doDeploy(IISURL, IISUSER, IISPWD) {
 def doCompress() {
     powershell ''' \
         Compress-Archive -Path C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/Package/* \
-        -DestinationPath C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/package.zip -Force \
+        -DestinationPath C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/package-${env.BUILD_NUMBER}.zip -Force \
     '''
 }
