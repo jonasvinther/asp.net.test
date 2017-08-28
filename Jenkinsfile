@@ -1,5 +1,6 @@
 node('windows') {
 
+    def commitId
     def artifactoryServer = Artifactory.server('artifactory')
     
     def artifactoryUploadSpec = """{
@@ -11,8 +12,11 @@ node('windows') {
         ]
     }"""
 
-    stage('Checkout') {
+    stage('Preparation') {
         checkout scm
+        powershell "git rev-parse --short HEAD > .git/commit-id"
+        commitId = readFile('.git/commit-id').trim()
+        echo commitId
     }
 
     stage('Build') {
