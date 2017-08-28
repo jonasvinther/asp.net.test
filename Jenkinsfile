@@ -7,7 +7,7 @@ node('windows') {
         "files": [
             {
                 "pattern": "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/package.zip",
-                "target": "bankdata-repo/bankdata-files"
+                "target": "nuget"
             }
         ]
     }"""
