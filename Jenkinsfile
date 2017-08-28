@@ -5,9 +5,7 @@ node('windows') {
 
     stage('Preparation') {
         checkout scm
-        powershell "git rev-parse HEAD > .git/commit-id"
-        commitId = readFile('.git/commit-id').trim()
-        echo commitId
+        commitId = powershell(script: "git rev-parse HEAD", returnStdout: true).trim()
     }
 
     stage('Build') {
