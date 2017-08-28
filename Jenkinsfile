@@ -1,5 +1,17 @@
 node('windows') {
 
+    def server = Artifactory.server('artifactory')
+
+
+    def downloadSpec = """{
+        "files": [
+            {
+                "pattern": "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/package.zip",
+                "target": "bankdata/"
+            }
+        ]
+    }"""
+
     stage('Checkout') {
         checkout scm
     }
@@ -23,7 +35,8 @@ node('windows') {
     }
 
     stage('Archive') {
-        archiveArtifacts artifacts: 'WebApplication1/obj/Release/Package/*', fingerprint: true
+        // archiveArtifacts artifacts: 'WebApplication1/obj/Release/Package/*', fingerprint: true
+        server.upload(uploadSpec)
     }
 
 }
