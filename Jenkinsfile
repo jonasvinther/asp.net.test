@@ -2,19 +2,10 @@ node('windows') {
 
     def commitId
     def artifactoryServer = Artifactory.server('artifactory')
-    
-    def artifactoryUploadSpec = """{
-        "files": [
-            {
-                "pattern": "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/package-${env.BUILD_NUMBER}.zip",
-                "target": "nuget"
-            }
-        ]
-    }"""
 
     stage('Preparation') {
         checkout scm
-        powershell "git rev-parse --short HEAD > .git/commit-id"
+        powershell "git rev-parse HEAD > .git/commit-id"
         commitId = readFile('.git/commit-id').trim()
         echo commitId
     }
@@ -45,6 +36,16 @@ node('windows') {
     }
 
     stage('Upload to artifactory') {
+        def artifactoryUploadSpec = """{
+            "files": [
+                {
+                    "pattern": "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/package-${env.BUILD_NUMBER}.zip",
+                    "target": "nuget",
+                    "props": "build=${commitId}"
+                }
+            ]
+        }"""
+
         artifactoryServer.upload(artifactoryUploadSpec)
     }
 
