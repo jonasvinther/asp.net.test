@@ -23,7 +23,7 @@ node('windows') {
     }
 
     stage('Archive') {
-        archiveArtifacts artifacts: 'WebApplication1/obj/Release/Package/*'
+        archive 'WebApplication1/obj/Release/Package/**'
     }
 
 }
