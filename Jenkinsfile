@@ -65,7 +65,7 @@ node('windows') {
 def doDeploy(IISURL, IISUSER, IISPWD, workspacePath) {
     echo workspacePath
     bat """ \
-        C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/Package/WebApplication1.deploy.cmd \
+        %workspacePath%/obj/Release/Package/WebApplication1.deploy.cmd \
         /Y \"-setParam:name=\'IIS Web Application Name\',value=\'test\'\" \
         \"/M:%IISURL%\" -allowUntrusted /U:%IISUSER% /P:%IISPWD% /A:Basic \
     """
