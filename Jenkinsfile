@@ -4,7 +4,6 @@ node('windows') {
 
         def commitId
         def artifactoryServer = Artifactory.server('artifactory')
-        def buildInfo = Artifactory.newBuildInfo()
         def workspacePath = "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1"
 
         stage('Preparation') {
@@ -48,7 +47,7 @@ node('windows') {
                 ]
             }"""
 
-            artifactoryServer.upload(artifactoryUploadSpec, buildInfo)
+            def buildinfo = artifactoryServer.upload(artifactoryUploadSpec)
             artifactoryServer.publishBuildInfo(buildinfo)
         }
 
