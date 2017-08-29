@@ -62,11 +62,11 @@ node('windows') {
 }
 
 def doDeploy(IISURL, IISUSER, IISPWD) {
-    bat ''' \
-        C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/Package/WebApplication1.deploy.cmd \
-        /Y "-setParam:name=\'IIS Web Application Name\',value=\'test\'" \
-        "/M:%IISURL%" -allowUntrusted /U:%IISUSER% /P:%IISPWD% /A:Basic \
-    '''
+    bat """ \
+        ${workspace}/obj/Release/Package/WebApplication1.deploy.cmd \
+        /Y \"-setParam:name=\'IIS Web Application Name\',value=\'test\'\" \
+        \"/M:%IISURL%\" -allowUntrusted /U:%IISUSER% /P:%IISPWD% /A:Basic \
+    """
 }
 
 def notifyBuild(String buildStatus = 'STARTED') {
