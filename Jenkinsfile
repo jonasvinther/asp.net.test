@@ -4,7 +4,7 @@ node('windows') {
 
         def commitId
         def artifactoryServer = Artifactory.server('artifactory')
-        def workspaceUrl = "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1"
+        def workspace = "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1"
 
         stage('Preparation') {
             checkout scm
@@ -31,8 +31,8 @@ node('windows') {
         stage('Archive') {
             // archiveArtifacts artifacts: 'WebApplication1/obj/Release/Package/*', fingerprint: true
             powershell """ \
-                Compress-Archive -Path ${workspaceUrl}/obj/Release/Package/* \
-                -DestinationPath ${workspaceUrl}/obj/Release/package-${env.BUILD_NUMBER}.zip -Force \
+                Compress-Archive -Path ${workspace}/obj/Release/Package/* \
+                -DestinationPath ${workspace}/obj/Release/package-${env.BUILD_NUMBER}.zip -Force \
             """
         }
 
@@ -40,7 +40,7 @@ node('windows') {
             def artifactoryUploadSpec = """{
                 "files": [
                     {
-                        "pattern": "${workspaceUrl}/obj/Release/package-${env.BUILD_NUMBER}.zip",
+                        "pattern": "${workspace}/obj/Release/package-${env.BUILD_NUMBER}.zip",
                         "target": "nuget",
                         "props": "commit.id=${commitId};"
                     }
