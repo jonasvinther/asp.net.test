@@ -24,6 +24,7 @@ node('windows') {
                 string(credentialsId: 'IISURL', variable: 'IISURL'), 
                 string(credentialsId: 'IISUSER', variable: 'IISUSER'), 
                 string(credentialsId: 'IISPWD', variable: 'IISPWD')]) {
+                    echo workspacePath
                     doDeploy(IISURL, IISUSER, IISPWD)
             }
         }
