@@ -4,6 +4,7 @@ node('windows') {
 
         def commitId
         def artifactoryServer = Artifactory.server('artifactory')
+        def workspaceUrl = "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1"
 
         stage('Preparation') {
             checkout scm
@@ -30,7 +31,7 @@ node('windows') {
         stage('Archive') {
             // archiveArtifacts artifacts: 'WebApplication1/obj/Release/Package/*', fingerprint: true
             powershell """ \
-                Compress-Archive -Path C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/Package/* \
+                Compress-Archive -Path ${workspaceUrl}/obj/Release/Package/* \
                 -DestinationPath C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/package-${env.BUILD_NUMBER}.zip -Force \
             """
         }
