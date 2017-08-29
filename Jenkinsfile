@@ -47,7 +47,8 @@ node('windows') {
                 ]
             }"""
 
-            artifactoryServer.upload(artifactoryUploadSpec)
+            def buildinfo = artifactoryServer.upload(artifactoryUploadSpec)
+            artifactoryServer.publishBuildInfo(buildinfo)
         }
 
     }
