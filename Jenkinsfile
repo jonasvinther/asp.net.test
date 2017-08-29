@@ -25,7 +25,7 @@ node('windows') {
                 string(credentialsId: 'IISUSER', variable: 'IISUSER'), 
                 string(credentialsId: 'IISPWD', variable: 'IISPWD')]) {
                     echo workspacePath
-                    doDeploy(IISURL, IISUSER, IISPWD)
+                    doDeploy(IISURL, IISUSER, IISPWD, workspacePath)
             }
         }
 
@@ -62,7 +62,8 @@ node('windows') {
 
 }
 
-def doDeploy(IISURL, IISUSER, IISPWD) {
+def doDeploy(IISURL, IISUSER, IISPWD, workspacePath) {
+    echo workspacePath
     bat """ \
         C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/Package/WebApplication1.deploy.cmd \
         /Y \"-setParam:name=\'IIS Web Application Name\',value=\'test\'\" \
