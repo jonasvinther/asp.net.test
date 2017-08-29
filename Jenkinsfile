@@ -4,7 +4,7 @@ node('windows') {
 
         def commitId
         def artifactoryServer = Artifactory.server('artifactory')
-        def workspace = "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1"
+        def workspacePath = "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1"
 
         stage('Preparation') {
             checkout scm
@@ -14,7 +14,7 @@ node('windows') {
         stage('Build') {
             bat """ \
                 \"C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/MSBuild/15.0/Bin/amd64/MSBuild.exe\" \
-                ${workspace}/WebApplication1.csproj \
+                ${workspacePath}/WebApplication1.csproj \
                 /v:detailed /t:restore;ReBuild;Package /p:Configuration=Release \
             """
         }
@@ -31,8 +31,8 @@ node('windows') {
         stage('Archive') {
             // archiveArtifacts artifacts: 'WebApplication1/obj/Release/Package/*', fingerprint: true
             powershell """ \
-                Compress-Archive -Path ${workspace}/obj/Release/Package/* \
-                -DestinationPath ${workspace}/obj/Release/package-${env.BUILD_NUMBER}.zip -Force \
+                Compress-Archive -Path ${workspacePath}/obj/Release/Package/* \
+                -DestinationPath ${workspacePath}/obj/Release/package-${env.BUILD_NUMBER}.zip -Force \
             """
         }
 
@@ -40,7 +40,7 @@ node('windows') {
             def artifactoryUploadSpec = """{
                 "files": [
                     {
-                        "pattern": "${workspace}/obj/Release/package-${env.BUILD_NUMBER}.zip",
+                        "pattern": "${workspacePath}/obj/Release/package-${env.BUILD_NUMBER}.zip",
                         "target": "nuget",
                         "props": "commit.id=${commitId};"
                     }
@@ -63,7 +63,7 @@ node('windows') {
 
 def doDeploy(IISURL, IISUSER, IISPWD) {
     bat """ \
-        ${workspace}/obj/Release/Package/WebApplication1.deploy.cmd \
+        ${workspacePath}/obj/Release/Package/WebApplication1.deploy.cmd \
         /Y \"-setParam:name=\'IIS Web Application Name\',value=\'test\'\" \
         \"/M:%IISURL%\" -allowUntrusted /U:%IISUSER% /P:%IISPWD% /A:Basic \
     """
