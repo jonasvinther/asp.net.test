@@ -14,7 +14,7 @@ node('windows') {
         stage('Build') {
             bat ''' \
                 "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/MSBuild/15.0/Bin/amd64/MSBuild.exe" \
-                C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/WebApplication1.csproj \
+                ${workspaceUrl}/WebApplication1.csproj \
                 /v:detailed /t:restore;ReBuild;Package /p:Configuration=Release \
             '''
         }
@@ -32,7 +32,7 @@ node('windows') {
             // archiveArtifacts artifacts: 'WebApplication1/obj/Release/Package/*', fingerprint: true
             powershell """ \
                 Compress-Archive -Path ${workspaceUrl}/obj/Release/Package/* \
-                -DestinationPath C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/package-${env.BUILD_NUMBER}.zip -Force \
+                -DestinationPath ${workspaceUrl}/obj/Release/package-${env.BUILD_NUMBER}.zip -Force \
             """
         }
 
@@ -40,7 +40,7 @@ node('windows') {
             def artifactoryUploadSpec = """{
                 "files": [
                     {
-                        "pattern": "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/package-${env.BUILD_NUMBER}.zip",
+                        "pattern": "${workspaceUrl}/obj/Release/package-${env.BUILD_NUMBER}.zip",
                         "target": "nuget",
                         "props": "commit.id=${commitId};"
                     }
@@ -63,7 +63,7 @@ node('windows') {
 
 def doDeploy(IISURL, IISUSER, IISPWD) {
     bat ''' \
-        C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1/obj/Release/Package/WebApplication1.deploy.cmd \
+        ${workspaceUrl}/obj/Release/Package/WebApplication1.deploy.cmd \
         /Y "-setParam:name=\'IIS Web Application Name\',value=\'test\'" \
         "/M:%IISURL%" -allowUntrusted /U:%IISUSER% /P:%IISPWD% /A:Basic \
     '''
