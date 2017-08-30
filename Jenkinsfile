@@ -12,7 +12,7 @@ node('windows') {
         }
 
         stage('Build') {
-            powershell "c:/Jenkins/nuget.exe restore c:/Jenkins\workspace\Bankdata.test.pipeline\WebApplication1.sln"
+            powershell "c:/Jenkins/nuget.exe restore c:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1.sln"
 
             bat """ \
                 \"C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/MSBuild/15.0/Bin/amd64/MSBuild.exe\" \
