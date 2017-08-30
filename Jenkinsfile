@@ -53,6 +53,10 @@ node('windows') {
             artifactoryServer.publishBuildInfo(buildinfo)
         }
 
+        stage('Clean up') {
+            deleteDir()
+        }
+
     }
     catch (e) {
         // If there was an exception thrown, the build failed
