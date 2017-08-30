@@ -7,6 +7,7 @@ node('windows') {
         def workspacePath = "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1"
 
         stage('Preparation') {
+            deleteDir()
             checkout scm
             commitId = powershell(script: "git rev-parse HEAD", returnStdout: true).trim()
         }
