@@ -60,8 +60,6 @@ node('windows') {
     } finally {
         // Success or failure, always send notifications
         notifyBuild(currentBuild.result)
-
-        deleteDir()
     }
 
 }
