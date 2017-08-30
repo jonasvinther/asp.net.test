@@ -7,12 +7,13 @@ node('windows') {
         def workspacePath = "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1"
 
         stage('Preparation') {
-            deleteDir()
             checkout scm
             commitId = powershell(script: "git rev-parse HEAD", returnStdout: true).trim()
         }
 
         stage('Build') {
+            powershell "c:/Jenkins/nuget.exe restore c:/Jenkins\workspace\Bankdata.test.pipeline\WebApplication1.sln"
+
             bat """ \
                 \"C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/MSBuild/15.0/Bin/amd64/MSBuild.exe\" \
                 ${workspacePath}/WebApplication1.csproj \
