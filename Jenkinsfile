@@ -15,7 +15,7 @@ node('windows') {
             powershell "c:/Jenkins/nuget.exe restore c:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1.sln"
 
             bat """ \
-                \"C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/MSBuild/15.0/Bin/amd64/MSBuild.exe\" \
+                \"C:/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin/amd64/MSBuild.exe\" \
                 ${workspacePath}/WebApplication1.csproj \
                 /v:detailed /t:restore;ReBuild;Package /p:Configuration=Release \
             """
