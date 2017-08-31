@@ -17,7 +17,7 @@ node('windows') {
             bat """ \
                 \"C:/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin/amd64/MSBuild.exe\" \
                 ${workspacePath}/WebApplication1.csproj \
-                /v:detailed /t:restore;ReBuild;Package /p:Configuration=Release \
+                /v:detailed /t:ReBuild;Package /p:Configuration=Release \
             """
         }
 
