@@ -43,7 +43,7 @@ node('windows') {
                 "files": [
                     {
                         "pattern": "${workspacePath}/obj/Release/package-${env.BUILD_NUMBER}.zip",
-                        "target": "generic-local",
+                        "target": "generic-local/production",
                         "props": "commit.id=${commitId};"
                     }
                 ]
