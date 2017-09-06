@@ -57,15 +57,14 @@ node('windows') {
             withCredentials([
                 [$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']
             ]) {
-                bat "echo %USERNAME%"
-                // powershell "$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes((\"{0}:{1}\" -f ${USERNAME},${PASSWORD})))"
+                def artifactoryBase64AuthInfo = powershell(script: "[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(('{0}:{1}' -f '${USERNAME}','${PASSWORD}')))", returnStdout: true).trim()
+                
+                powershell """ \
+                 Invoke-RestMethod -Headers @{Authorization=('Basic {0}' -f '${artifactoryBase64AuthInfo}')} \
+                 -Method POST -UseBasicParsing \
+                 -Uri 'http://52.29.11.22:8081/artifactory/api/copy/generic-local/package-${env.BUILD_NUMBER}.zip?to=/production/package-${env.BUILD_NUMBER}.zip' \
+                """
             }
-
-            // powershell """ \
-            //     Invoke-RestMethod -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} \
-            //     -Method POST -UseBasicParsing \
-            //     -Uri "http://52.29.11.22:8081/artifactory/api/copy/generic-local/package-${env.BUILD_NUMBER}.zip?to=/production/package-${env.BUILD_NUMBER}.zip"
-            // """
         }
 
     }
