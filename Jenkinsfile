@@ -58,7 +58,6 @@ node('windows') {
                 [$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']
             ]) {
                 echo %USERNAME%
-                // powershell "$base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes((\"{0}:{1}\" -f ${USERNAME},${PASSWORD})))"
             }
 
             // powershell """ \
