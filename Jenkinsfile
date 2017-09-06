@@ -54,17 +54,9 @@ node('windows') {
         }
 
         stage('Move artifact') {
-            withCredentials([
-                [$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']
-            ]) {
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']]) {
                 echo %USERNAME%
             }
-
-            // powershell """ \
-            //     Invoke-RestMethod -Headers @{Authorization=("Basic {0}" -f $base64AuthInfo)} \
-            //     -Method POST -UseBasicParsing \
-            //     -Uri "http://52.29.11.22:8081/artifactory/api/copy/generic-local/package-${env.BUILD_NUMBER}.zip?to=/production/package-${env.BUILD_NUMBER}.zip"
-            // """
         }
 
     }
