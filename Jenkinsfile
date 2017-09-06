@@ -2,10 +2,12 @@ node('windows') {
     try {
         notifyBuild('STARTED')
 
-        def commitId
+        def commitId = ""
+        def commitAuthorName = "none"
+
         def artifactoryServer = Artifactory.server('artifactory')
-        def workspacePath = "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1"
         def artifactoryApiPath = "http://52.29.11.22:8081/artifactory/api"
+        def workspacePath = "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1"
 
         stage('Preparation') {
             checkout scm
@@ -56,15 +58,15 @@ node('windows') {
         }
 
         stage('Move artifact') {
-            withCredentials([
-                [$class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD']
-            ]) {
+            withCredentials([[
+                $class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'
+            ]]) {
                 def artifactoryBase64AuthInfo = powershell(script: "[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(('{0}:{1}' -f '${USERNAME}','${PASSWORD}')))", returnStdout: true).trim()
                 
                 powershell """ \
-                 Invoke-RestMethod -Headers @{Authorization=('Basic {0}' -f '${artifactoryBase64AuthInfo}')} \
-                 -Method POST -UseBasicParsing \
-                 -Uri '${artifactoryApiPath}/copy/generic-local/package-${env.BUILD_NUMBER}.zip?to=/production/package-${env.BUILD_NUMBER}.zip' \
+                    Invoke-RestMethod -Headers @{Authorization=('Basic {0}' -f '${artifactoryBase64AuthInfo}')} \
+                    -Method POST -UseBasicParsing \
+                    -Uri '${artifactoryApiPath}/copy/generic-local/package-${env.BUILD_NUMBER}.zip?to=/production/package-${env.BUILD_NUMBER}.zip' \
                 """
             }
         }
