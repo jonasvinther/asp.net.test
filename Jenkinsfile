@@ -10,6 +10,8 @@ node('windows') {
         stage('Preparation') {
             checkout scm
             commitId = powershell(script: "git rev-parse HEAD", returnStdout: true).trim()
+            authorName = powershell(script: "git log -1 --format='%an' ${inputSHA}", returnStdout: true).trim()
+            echo authorName
         }
 
         stage('Build') {
