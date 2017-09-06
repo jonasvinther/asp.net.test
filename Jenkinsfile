@@ -5,6 +5,7 @@ node('windows') {
         def commitId
         def artifactoryServer = Artifactory.server('artifactory')
         def workspacePath = "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1"
+        def artifactoryApiPath = "http://52.29.11.22:8081/artifactory/api"
 
         stage('Preparation') {
             checkout scm
@@ -62,7 +63,7 @@ node('windows') {
                 powershell """ \
                  Invoke-RestMethod -Headers @{Authorization=('Basic {0}' -f '${artifactoryBase64AuthInfo}')} \
                  -Method POST -UseBasicParsing \
-                 -Uri 'http://52.29.11.22:8081/artifactory/api/copy/generic-local/package-${env.BUILD_NUMBER}.zip?to=/production/package-${env.BUILD_NUMBER}.zip' \
+                 -Uri '${artifactoryApiPath}/copy/generic-local/package-${env.BUILD_NUMBER}.zip?to=/production/package-${env.BUILD_NUMBER}.zip' \
                 """
             }
         }
