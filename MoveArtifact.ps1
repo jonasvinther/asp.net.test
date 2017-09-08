@@ -3,14 +3,15 @@ param(
     [ValidateRange(0,[int]::MaxValue)]
     [int] $build_number = $(Throw "Please specify build number"),
     
-   [Parameter(Position=1)]
+    [Parameter(Position=1)]
     [ValidateSet('P','S','T')]
     [string] $from,
     
-   [Parameter(Position=2)]
+    [Parameter(Position=2)]
     [ValidateSet('P','S','T')]
     [string] $to,
 
+    [Parameter(Position=3)]
     [string] $username
 )
 
