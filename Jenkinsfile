@@ -8,6 +8,7 @@ node('windows') {
         def artifactoryServer = Artifactory.server('artifactory')
         def artifactoryApiPath = "http://52.29.11.22:8081/artifactory/api"
         def workspacePath = "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1"
+        def repository = 'general-local'
 
         stage('Preparation') {
             checkout scm
@@ -47,7 +48,7 @@ node('windows') {
                 "files": [
                     {
                         "pattern": "${workspacePath}/obj/Release/package-${env.BUILD_NUMBER}.zip",
-                        "target": "generic-local/",
+                        "target": "generic-local/S/",
                         "props": "commit.id=${commitId};commit.author.name=${commitAuthorName}"
                     }
                 ]
@@ -61,13 +62,15 @@ node('windows') {
             withCredentials([[
                 $class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'
             ]]) {
-                def artifactoryBase64AuthInfo = powershell(script: "[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(('{0}:{1}' -f '${USERNAME}','${PASSWORD}')))", returnStdout: true).trim()
+                PowerShell(". '.\\MoveArtifact.ps1 ${env.BUILD_NUMBER} S P ${USERNAME} ${PASSWORD} ${artifactoryApiPath} ${repository}'") 
+
+                // def artifactoryBase64AuthInfo = powershell(script: "[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(('{0}:{1}' -f '${USERNAME}','${PASSWORD}')))", returnStdout: true).trim()
                 
-                powershell """ \
-                    Invoke-RestMethod -Headers @{Authorization=('Basic {0}' -f '${artifactoryBase64AuthInfo}')} \
-                    -Method POST -UseBasicParsing \
-                    -Uri '${artifactoryApiPath}/copy/generic-local/package-${env.BUILD_NUMBER}.zip?to=/production/package-${env.BUILD_NUMBER}.zip' \
-                """
+                // powershell """ \
+                //     Invoke-RestMethod -Headers @{Authorization=('Basic {0}' -f '${artifactoryBase64AuthInfo}')} \
+                //     -Method POST -UseBasicParsing \
+                //     -Uri '${artifactoryApiPath}/copy/generic-local/package-${env.BUILD_NUMBER}.zip?to=/production/package-${env.BUILD_NUMBER}.zip' \
+                // """
             }
         }
 
