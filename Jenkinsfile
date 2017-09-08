@@ -8,7 +8,7 @@ node('windows') {
         def artifactoryServer = Artifactory.server('artifactory')
         def artifactoryApiPath = "http://52.29.11.22:8081/artifactory/api"
         def workspacePath = "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1"
-        def repository = 'general-local'
+        def repository = 'generic-local'
 
         stage('Preparation') {
             checkout scm
