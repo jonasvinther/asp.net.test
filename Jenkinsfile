@@ -62,7 +62,7 @@ node('windows') {
             withCredentials([[
                 $class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'
             ]]) {
-                PowerShell(". '.\\MoveArtifact.ps1 ${env.BUILD_NUMBER} S P ${USERNAME} ${PASSWORD} ${artifactoryApiPath} ${repository}'") 
+                powershell(". '.\\MoveArtifact.ps1 ${env.BUILD_NUMBER} S P ${USERNAME} ${PASSWORD} ${artifactoryApiPath} ${repository}'") 
 
                 // def artifactoryBase64AuthInfo = powershell(script: "[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(('{0}:{1}' -f '${USERNAME}','${PASSWORD}')))", returnStdout: true).trim()
                 
