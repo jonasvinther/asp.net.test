@@ -1,1 +1,5 @@
-echo "Hello from powershell"
+param(
+    [string] $message
+)
+
+echo $message
