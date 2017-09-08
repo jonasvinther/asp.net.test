@@ -11,10 +11,7 @@ param(
     [ValidateSet('P','S','T')]
     [string] $to,
 
-    [string] $username,
-    [string] $password,
-    [string] $artifactoryApiPath,
-    [string] $repository
+    [string] $username
 )
 
 $base64AuthInfo = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(('{0}:{1}' -f $username,$password)))
