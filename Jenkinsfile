@@ -49,7 +49,7 @@ node('windows') {
                     {
                         "pattern": "${workspacePath}/obj/Release/package-${env.BUILD_NUMBER}.zip",
                         "target": "generic-local/S/",
-                        "props": "commit.id=${commitId};commit.author.name=${commitAuthorName}"
+                        "props": "commit.id=${commitId};commit.author.name=${commitAuthorName};build.user=${BUILD_USER}"
                     }
                 ]
             }"""
