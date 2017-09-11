@@ -18,6 +18,7 @@ node('windows') {
             return env.BUILD_USER_EMAIL
         }
         def build_name_email = "${build_username} <${build_email}>"
+        echo build_name_email
 
         stage('Preparation') {
             checkout scm
@@ -58,7 +59,7 @@ node('windows') {
                     {
                         "pattern": "${workspacePath}/obj/Release/package-${env.BUILD_NUMBER}.zip",
                         "target": "generic-local/S/",
-                        "props": "commit.id=${commitId};commit.author.name=${commitAuthorName};build.user=${build_name_email}"
+                        "props": "commit.id=${commitId};commit.author.name=${commitAuthorName};builduser=${build_name_email}"
                     }
                 ]
             }"""
