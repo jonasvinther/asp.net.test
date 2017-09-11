@@ -17,7 +17,7 @@ node('windows') {
         def build_email = wrap([$class: 'BuildUser']) {
             return env.BUILD_USER_EMAIL
         }
-        build_name_email = "${build_username} <${build_email}>"
+        def build_name_email = "${build_username} <${build_email}>"
 
         stage('Preparation') {
             checkout scm
