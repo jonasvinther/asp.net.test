@@ -1,5 +1,3 @@
-PUT /storage/libs-release-local/ch/qos/logback/logback-classic/0.9.9?properties=os=win,linux;qa=done&recursive=1
-
 param(
     [Parameter(Position=0)]
     [ValidateRange(0,[int]::MaxValue)]
