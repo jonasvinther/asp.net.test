@@ -1,0 +1,81 @@
+node('windows') {
+    try {
+        notifyBuild('STARTED')
+
+        def commitId = ""
+        def commitAuthorName = "none"
+
+        def artifactoryServer = Artifactory.server('artifactory')
+        def artifactoryApiPath = "http://52.29.11.22:8081/artifactory/api"
+        def workspacePath = "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1"
+        def repository = 'generic-local'
+
+         def signerUserName = wrap([$class: 'BuildUser']) {
+            return env.BUILD_USER
+        }
+        
+        def signerUserEmail = wrap([$class: 'BuildUser']) {
+            return env.BUILD_USER_EMAIL
+        }
+
+        stage('Preparation') {
+            checkout scm
+            commitId = powershell(script: "git rev-parse HEAD", returnStdout: true).trim()
+            commitAuthorName = powershell(script: "git log -1 --format='%an' ${commitId}", returnStdout: true).trim()
+            commitAuthorEmail = powershell(script: "git log -1 --format='%ae' ${commitId}", returnStdout: true).trim()
+        }
+
+        stage('Move artifact') {
+            withCredentials([[
+                $class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'
+            ]]) {
+                powershell(". '.\\build_scripts\\AttachPropToArtifact.ps1' ${env.BUILD_NUMBER} S P ${USERNAME} ${PASSWORD} ${artifactoryApiPath} ${repository}") 
+            }
+        }
+
+        stage('User input') {
+            def userInput = input(
+            id: 'userInput', message: 'Let\'s promote?', parameters: [
+                [$class: 'TextParameterDefinition', defaultValue: 'uat', description: 'Environment', name: 'env'],
+                [$class: 'TextParameterDefinition', defaultValue: 'uat1', description: 'Target', name: 'target']
+            ])
+            echo ("Env: "+userInput['env'])
+            echo ("Target: "+userInput['target'])
+        }
+
+    }
+    catch (e) {
+        // If there was an exception thrown, the build failed
+        currentBuild.result = "FAILED"
+    } finally {
+        // Success or failure, always send notifications
+        notifyBuild(currentBuild.result)
+    }
+
+}
+
+def notifyBuild(String buildStatus = 'STARTED') {
+    // build status of null means successful
+    buildStatus =  buildStatus ?: 'SUCCESSFUL'
+
+    // Default values
+    def colorName = 'RED'
+    def colorCode = '#FF0000'
+    def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+    def summary = "${subject} <${env.BUILD_URL}|Job URL> - <${env.BUILD_URL}/console|Console Output>"
+
+    // Override default values based on build status
+    if (buildStatus == 'STARTED') {
+        color = 'YELLOW'
+        colorCode = '#FFFF00'
+    } else if (buildStatus == 'SUCCESSFUL') {
+        color = 'GREEN'
+        colorCode = '#00FF00'
+    } else {
+        color = 'RED'
+        colorCode = '#FF0000'
+    }
+
+    // Send notifications
+    slackSend (color: colorCode, message: summary)
+}
