@@ -22,6 +22,7 @@ node('windows') {
             checkout scm
             commitId = powershell(script: "git rev-parse HEAD", returnStdout: true).trim()
             commitAuthorName = powershell(script: "git log -1 --format='%an' ${commitId}", returnStdout: true).trim()
+            commitAuthorEmail = powershell(script: "git log -1 --format='%ae' ${commitId}", returnStdout: true).trim()
         }
 
         stage('Build') {
@@ -57,7 +58,13 @@ node('windows') {
                     {
                         "pattern": "${workspacePath}/obj/Release/package-${env.BUILD_NUMBER}.zip",
                         "target": "generic-local/S/",
-                        "props": "commit.id=${commitId};commit.author.name=${commitAuthorName};build.author.name=${buildUsername};build.author.email=${buildEmail}"
+                        "props": "\
+                            commit.id=${commitId}; \
+                            commit.author.name=${commitAuthorName}; \
+                            commit.author.email=${commitAuthorEmail}; \
+                            build.author.name=${buildUsername}; \
+                            build.author.email=${buildEmail}; \
+                        "
                     }
                 ]
             }"""
