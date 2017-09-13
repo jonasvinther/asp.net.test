@@ -53,18 +53,20 @@ node('windows') {
         }
 
         stage('Upload to artifactory') {
+            def props = "
+                commit.id=${commitId}; \
+                commit.author.name=${commitAuthorName}; \
+                commit.author.email=${commitAuthorEmail}; \
+                build.author.name=${buildUsername}; \
+                build.author.email=${buildEmail}; \
+            ".trim()
+
             def artifactoryUploadSpec = """{
                 "files": [
                     {
                         "pattern": "${workspacePath}/obj/Release/package-${env.BUILD_NUMBER}.zip",
                         "target": "generic-local/S/",
-                        "props": "\
-                            commit.id=${commitId}; \
-                            commit.author.name=${commitAuthorName}; \
-                            commit.author.email=${commitAuthorEmail}; \
-                            build.author.name=${buildUsername}; \
-                            build.author.email=${buildEmail}; \
-                        "
+                        "props": "${props}"
                     }
                 ]
             }"""
