@@ -25,11 +25,11 @@ node('windows') {
             commitAuthorEmail = powershell(script: "git log -1 --format='%ae' ${commitId}", returnStdout: true).trim()
         }
 
-        stage('Move artifact') {
+        stage('Add properties to artifact') {
             withCredentials([[
                 $class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'
             ]]) {
-                powershell(". '.\\build_scripts\\AttachPropToArtifact.ps1' ${env.BUILD_NUMBER} S P ${USERNAME} ${PASSWORD} ${artifactoryApiPath} ${repository}") 
+                powershell(". '.\\build_scripts\\AttachPropToArtifact.ps1' ${env.BUILD_NUMBER} P S ${USERNAME} ${PASSWORD} ${artifactoryApiPath} ${repository}") 
             }
         }
 
