@@ -53,7 +53,7 @@ node('windows') {
         }
 
         stage('Upload to artifactory') {
-            def props = "
+            def props = " \
                 commit.id=${commitId}; \
                 commit.author.name=${commitAuthorName}; \
                 commit.author.email=${commitAuthorEmail}; \
