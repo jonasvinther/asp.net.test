@@ -10,11 +10,11 @@ node('windows') {
         def workspacePath = "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1"
         def repository = 'generic-local'
 
-         def buildUsername = wrap([$class: 'BuildUser']) {
+         def buildUserName = wrap([$class: 'BuildUser']) {
             return env.BUILD_USER
         }
         
-        def buildEmail = wrap([$class: 'BuildUser']) {
+        def buildUserEmail = wrap([$class: 'BuildUser']) {
             return env.BUILD_USER_EMAIL
         }
 
@@ -53,24 +53,12 @@ node('windows') {
         }
 
         stage('Upload to artifactory') {
-            def props = [:]
-            map["commit.id"] = commitId
-            map["commit.author.name"] = commitAuthorName
-
-            // def props = " \
-            //     commit.id=${commitId}; \
-            //     commit.author.name=${commitAuthorName}; \
-            //     commit.author.email=${commitAuthorEmail}; \
-            //     build.author.name=${buildUsername}; \
-            //     build.author.email=${buildEmail}; \
-            // ".trim()
-
             def artifactoryUploadSpec = """{
                 "files": [
                     {
                         "pattern": "${workspacePath}/obj/Release/package-${env.BUILD_NUMBER}.zip",
                         "target": "generic-local/S/",
-                        "props": "${props}"
+                        "props": "commit.id=${commitId};commit.author.name=${commitAuthorName};commit.author.email=${commitAuthorEmail};build.author.name=${buildUserName};build.author.email=${buildUserEmail};"
                     }
                 ]
             }"""
