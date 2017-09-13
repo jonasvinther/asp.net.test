@@ -53,13 +53,17 @@ node('windows') {
         }
 
         stage('Upload to artifactory') {
-            def props = " \
-                commit.id=${commitId}; \
-                commit.author.name=${commitAuthorName}; \
-                commit.author.email=${commitAuthorEmail}; \
-                build.author.name=${buildUsername}; \
-                build.author.email=${buildEmail}; \
-            ".trim()
+            def props = [:]
+            map["commit.id"] = commitId
+            map["commit.author.name"] = commitAuthorName
+
+            // def props = " \
+            //     commit.id=${commitId}; \
+            //     commit.author.name=${commitAuthorName}; \
+            //     commit.author.email=${commitAuthorEmail}; \
+            //     build.author.name=${buildUsername}; \
+            //     build.author.email=${buildEmail}; \
+            // ".trim()
 
             def artifactoryUploadSpec = """{
                 "files": [
