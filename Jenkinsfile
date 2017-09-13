@@ -10,15 +10,13 @@ node('windows') {
         def workspacePath = "C:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1"
         def repository = 'generic-local'
 
-         def build_username = wrap([$class: 'BuildUser']) {
+         def buildUsername = wrap([$class: 'BuildUser']) {
             return env.BUILD_USER
         }
         
-        def build_email = wrap([$class: 'BuildUser']) {
+        def buildEmail = wrap([$class: 'BuildUser']) {
             return env.BUILD_USER_EMAIL
         }
-        def build_name_email = "${build_username} <${build_email}>"
-        echo build_name_email
 
         stage('Preparation') {
             checkout scm
@@ -59,7 +57,7 @@ node('windows') {
                     {
                         "pattern": "${workspacePath}/obj/Release/package-${env.BUILD_NUMBER}.zip",
                         "target": "generic-local/S/",
-                        "props": "commit.id=${commitId};commit.author.name=${commitAuthorName};"
+                        "props": "commit.id=${commitId};commit.author.name=${commitAuthorName};build.author.name=${buildUsername};build.author.email=${buildEmail}"
                     }
                 ]
             }"""
