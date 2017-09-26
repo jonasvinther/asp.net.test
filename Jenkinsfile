@@ -44,54 +44,54 @@ node('windows') {
             }
         }
 
-        stage('Archive') {
-            // archiveArtifacts artifacts: 'WebApplication1/obj/Release/Package/*', fingerprint: true
-            powershell """ \
-                Compress-Archive -Path ${workspacePath}/obj/Release/Package/* \
-                -DestinationPath ${workspacePath}/obj/Release/package-${env.BUILD_NUMBER}.zip -Force \
-            """
-        }
+        // stage('Archive') {
+        //     // archiveArtifacts artifacts: 'WebApplication1/obj/Release/Package/*', fingerprint: true
+        //     powershell """ \
+        //         Compress-Archive -Path ${workspacePath}/obj/Release/Package/* \
+        //         -DestinationPath ${workspacePath}/obj/Release/package-${env.BUILD_NUMBER}.zip -Force \
+        //     """
+        // }
 
-        stage('Upload to artifactory') {
-            def artifactoryUploadSpec = """{
-                "files": [
-                    {
-                        "pattern": "${workspacePath}/obj/Release/package-${env.BUILD_NUMBER}.zip",
-                        "target": "generic-local/S/",
-                        "props": "commit.id=${commitId};commit.author.name=${commitAuthorName};commit.author.email=${commitAuthorEmail};build.author.name=${buildUserName};build.author.email=${buildUserEmail};"
-                    }
-                ]
-            }"""
+        // stage('Upload to artifactory') {
+        //     def artifactoryUploadSpec = """{
+        //         "files": [
+        //             {
+        //                 "pattern": "${workspacePath}/obj/Release/package-${env.BUILD_NUMBER}.zip",
+        //                 "target": "generic-local/S/",
+        //                 "props": "commit.id=${commitId};commit.author.name=${commitAuthorName};commit.author.email=${commitAuthorEmail};build.author.name=${buildUserName};build.author.email=${buildUserEmail};"
+        //             }
+        //         ]
+        //     }"""
 
-            def buildinfo = artifactoryServer.upload(artifactoryUploadSpec)
-            artifactoryServer.publishBuildInfo(buildinfo)
-        }
+        //     def buildinfo = artifactoryServer.upload(artifactoryUploadSpec)
+        //     artifactoryServer.publishBuildInfo(buildinfo)
+        // }
 
-        stage('Move artifact') {
-            withCredentials([[
-                $class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'
-            ]]) {
-                powershell(". '.\\build_scripts\\MoveArtifact.ps1' ${env.BUILD_NUMBER} S P ${USERNAME} ${PASSWORD} ${artifactoryApiPath} ${repository}") 
+        // stage('Move artifact') {
+        //     withCredentials([[
+        //         $class: 'UsernamePasswordMultiBinding', credentialsId: 'artifactory', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'
+        //     ]]) {
+        //         powershell(". '.\\build_scripts\\MoveArtifact.ps1' ${env.BUILD_NUMBER} S P ${USERNAME} ${PASSWORD} ${artifactoryApiPath} ${repository}") 
 
-                // def artifactoryBase64AuthInfo = powershell(script: "[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(('{0}:{1}' -f '${USERNAME}','${PASSWORD}')))", returnStdout: true).trim()
+        //         // def artifactoryBase64AuthInfo = powershell(script: "[Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(('{0}:{1}' -f '${USERNAME}','${PASSWORD}')))", returnStdout: true).trim()
                 
-                // powershell """ \
-                //     Invoke-RestMethod -Headers @{Authorization=('Basic {0}' -f '${artifactoryBase64AuthInfo}')} \
-                //     -Method POST -UseBasicParsing \
-                //     -Uri '${artifactoryApiPath}/copy/generic-local/package-${env.BUILD_NUMBER}.zip?to=/production/package-${env.BUILD_NUMBER}.zip' \
-                // """
-            }
-        }
+        //         // powershell """ \
+        //         //     Invoke-RestMethod -Headers @{Authorization=('Basic {0}' -f '${artifactoryBase64AuthInfo}')} \
+        //         //     -Method POST -UseBasicParsing \
+        //         //     -Uri '${artifactoryApiPath}/copy/generic-local/package-${env.BUILD_NUMBER}.zip?to=/production/package-${env.BUILD_NUMBER}.zip' \
+        //         // """
+        //     }
+        // }
 
-        stage('User input') {
-            def userInput = input(
-            id: 'userInput', message: 'Let\'s promote?', parameters: [
-                [$class: 'TextParameterDefinition', defaultValue: 'uat', description: 'Environment', name: 'env'],
-                [$class: 'TextParameterDefinition', defaultValue: 'uat1', description: 'Target', name: 'target']
-            ])
-            echo ("Env: "+userInput['env'])
-            echo ("Target: "+userInput['target'])
-        }
+        // stage('User input') {
+        //     def userInput = input(
+        //     id: 'userInput', message: 'Let\'s promote?', parameters: [
+        //         [$class: 'TextParameterDefinition', defaultValue: 'uat', description: 'Environment', name: 'env'],
+        //         [$class: 'TextParameterDefinition', defaultValue: 'uat1', description: 'Target', name: 'target']
+        //     ])
+        //     echo ("Env: "+userInput['env'])
+        //     echo ("Target: "+userInput['target'])
+        // }
 
     }
     catch (e) {
