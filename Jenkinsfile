@@ -26,23 +26,28 @@ node('windows') {
         }
 
         stage('Build') {
-            powershell "c:/Jenkins/nuget.exe restore c:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1.sln"
 
-            bat """ \
-                \"C:/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin/amd64/MSBuild.exe\" \
-                ${workspacePath}/WebApplication1.csproj \
-                /v:detailed /t:ReBuild;Package /p:Configuration=Release \
-            """
+            // powershell "c:/Jenkins/nuget.exe restore c:/Jenkins/workspace/Bankdata.test.pipeline/WebApplication1.sln"
+
+            echo "Run nuget restore"
+            def utils = load(pwd() + "/utils.groovy")
+            echo utils.restoreNuget()
+
+            // bat """ \
+            //     \"C:/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/MSBuild/15.0/Bin/amd64/MSBuild.exe\" \
+            //     ${workspacePath}/WebApplication1.csproj \
+            //     /v:detailed /t:ReBuild;Package /p:Configuration=Release \
+            // """
         }
 
-        stage('Deploy') {
-            withCredentials([
-                string(credentialsId: 'IISURL', variable: 'IISURL'), 
-                string(credentialsId: 'IISUSER', variable: 'IISUSER'), 
-                string(credentialsId: 'IISPWD', variable: 'IISPWD')]) {
-                    doDeploy(IISURL, IISUSER, IISPWD, workspacePath)
-            }
-        }
+        // stage('Deploy') {
+        //     withCredentials([
+        //         string(credentialsId: 'IISURL', variable: 'IISURL'), 
+        //         string(credentialsId: 'IISUSER', variable: 'IISUSER'), 
+        //         string(credentialsId: 'IISPWD', variable: 'IISPWD')]) {
+        //             doDeploy(IISURL, IISUSER, IISPWD, workspacePath)
+        //     }
+        // }
 
         // stage('Archive') {
         //     // archiveArtifacts artifacts: 'WebApplication1/obj/Release/Package/*', fingerprint: true
